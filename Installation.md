@@ -15,3 +15,7 @@ make
 ```
 
 Then you would see **perf** in the same directory.
+
+For more detail, take a look at [Building][1].
+
+[1]: http://www.brendangregg.com/perf.html#Building
