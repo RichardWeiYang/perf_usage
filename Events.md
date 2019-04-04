@@ -1,7 +1,9 @@
 Perf is an event-oriented observability tool, so first let's take a look
 available events
 
-# All events
+# List events
+
+## All events
 
 ```
 perf list
@@ -217,7 +219,7 @@ Unknown_Branches:
        [Average Branch Address Clear Cost (fraction of cycles)]
 ```
 
-# Show events in one category
+## Show events in one category
 
 There are too many events, it would be helpful to just show events in one
 category.
@@ -263,7 +265,7 @@ List of pre-defined events (to be used in -e):
   node-stores                                        [Hardware cache event]
 ```
 
-# Show Tracepoint event in category
+## Show Tracepoint event in category
 
 Tracepoint event is a special category event, which is implemented by kernel ftrace.[?]
 
@@ -328,3 +330,43 @@ sched:sched_wakeup                                 [Tracepoint event]
 sched:sched_wakeup_new                             [Tracepoint event]
 sched:sched_waking                                 [Tracepoint event]
 ```
+
+# Event selection
+
+Since perf is event oriented, one of the process to use it is to specify the event we want to monitor.
+
+Generally, "-e" option is used to specify the event, while we may have several important cases.
+
+## Specify particular event
+
+```
+perf stat -e cycles dd if=/dev/zero of=/dev/null count=100000
+```
+
+cycles is one event in perf stat, use "-e cycles" to specify to monitor this event.
+
+And perf supports to specify several events
+
+```
+perf stat -e cycles,instructions dd if=/dev/zero of=/dev/null count=100000
+```
+
+### Modifiers
+
+Events can optionally have a modifier by appending a colon and one or more modifiers.
+
+Modifiers  | Description | Example
+  ------------- | -------------
+  u	| monitor at priv level 3, 2, 1 (user)	| event:u
+  k	| monitor at priv level 0 (kernel)	    | event:k
+  h	| monitor hypervisor events on a virtualization environment	| event:h
+  H	| monitor host machine on a virtualization environment	| event:H
+  G	| monitor guest machine on a virtualization environment	| event:G
+
+So the above command could be changed to
+
+```
+perf stat -e cycles:u dd if=/dev/zero of=/dev/null count=100000
+```
+
+Then this will only count user level events.
