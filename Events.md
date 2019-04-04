@@ -262,3 +262,69 @@ List of pre-defined events (to be used in -e):
   node-store-misses                                  [Hardware cache event]
   node-stores                                        [Hardware cache event]
 ```
+
+# Show Tracepoint event in category
+
+Tracepoint event is a special category event, which is implemented by kernel ftrace.[?]
+
+To list a summary of tracepoint events:
+
+```
+# perf list | awk -F: '/Tracepoint event/ { lib[$1]++ } END {
+    for (l in lib) { printf "  %-16.16s: %d\n", l, lib[l] } }' | sort -t: -k2 -nr | column
+
+     syscalls       : 626	   x86_fpu        : 12	   smbus          : 4	   ftrace         : 2
+     ext4           : 105	   rtc            : 12	   rpm            : 4	   exceptions     : 2
+     kvm            : 72	   kmem           : 12	   i2c            : 4	   cma            : 2
+     xhci-hcd       : 48	   irq_matrix     : 12	   huge_memory    : 4	   vsyscall       : 1
+     sunrpc         : 36	   filelock       : 11	   filemap        : 4	   udp            : 1
+     irq_vectors    : 32	   cgroup         : 9	   bridge         : 4	   tlb            : 1
+     writeback      : 29	   xdp            : 8	   alarmtimer     : 4	   sync_trace     : 1
+     sched          : 24	   oom            : 8	   sock           : 3	   swiotlb        : 1
+     power          : 23	   tcp            : 7	   skb            : 3	   rcu            : 1
+     nfsd           : 23	   regulator      : 7	   msr            : 3	   qdisc          : 1
+     block          : 18	   iommu          : 7	   initcall       : 3	   printk         : 1
+     net            : 17	   dma_fence      : 7	   hwmon          : 3	   page_isolation : 1
+     vmscan         : 16	   libata         : 6	   drm            : 3	   nmi            : 1
+     jbd2           : 16	   thermal        : 5	   cpuhp          : 3	   napi           : 1
+     clk            : 16	   scsi           : 5	   thermal_power_ : 2	   migrate        : 1
+     regmap         : 15	   ras            : 5	   task           : 2	   mdio           : 1
+     random         : 15	   percpu         : 5	   signal         : 2	   mce            : 1
+     kvmmmu         : 14	   module         : 5	   rseq           : 2	   fib            : 1
+     fs_dax         : 14	   irq            : 5	   raw_syscalls   : 2
+     compaction     : 14	   workqueue      : 4	   pagemap        : 2
+     timer          : 13	   wbt            : 4	   gpio           : 2
+```
+
+From the above output, we can see syscalls has the most number of trace points.
+
+Then if you want to see the tracepoint in one category, use the following command.
+
+```
+# perf list 'sched:*'
+
+sched:sched_kthread_stop                           [Tracepoint event]
+sched:sched_kthread_stop_ret                       [Tracepoint event]
+sched:sched_migrate_task                           [Tracepoint event]
+sched:sched_move_numa                              [Tracepoint event]
+sched:sched_pi_setprio                             [Tracepoint event]
+sched:sched_process_exec                           [Tracepoint event]
+sched:sched_process_exit                           [Tracepoint event]
+sched:sched_process_fork                           [Tracepoint event]
+sched:sched_process_free                           [Tracepoint event]
+sched:sched_process_hang                           [Tracepoint event]
+sched:sched_process_wait                           [Tracepoint event]
+sched:sched_stat_blocked                           [Tracepoint event]
+sched:sched_stat_iowait                            [Tracepoint event]
+sched:sched_stat_runtime                           [Tracepoint event]
+sched:sched_stat_sleep                             [Tracepoint event]
+sched:sched_stat_wait                              [Tracepoint event]
+sched:sched_stick_numa                             [Tracepoint event]
+sched:sched_swap_numa                              [Tracepoint event]
+sched:sched_switch                                 [Tracepoint event]
+sched:sched_wait_task                              [Tracepoint event]
+sched:sched_wake_idle_without_ipi                  [Tracepoint event]
+sched:sched_wakeup                                 [Tracepoint event]
+sched:sched_wakeup_new                             [Tracepoint event]
+sched:sched_waking                                 [Tracepoint event]
+```
